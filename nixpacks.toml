@@ -1,0 +1,4 @@
+nixpkgs:
+  packages:
+    - nodejs_20
+    - postgresql
