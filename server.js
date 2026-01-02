@@ -8,9 +8,24 @@ const cors = require('cors');
 const compression = require('compression');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const { execSync } = require('child_process');
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+
+// Run migrations on startup (Railway deployment)
+async function runMigrations() {
+  if (process.env.DATABASE_URL && process.env.NODE_ENV === 'production') {
+    try {
+      console.log('🔄 Running database migrations...');
+      execSync('npx prisma migrate deploy', { stdio: 'inherit' });
+      console.log('✅ Database migrations completed');
+    } catch (error) {
+      console.error('❌ Migration error:', error.message);
+      // Continue anyway - migrations might already be applied
+    }
+  }
+}
 
 // Import routes
 const authRoutes = require('./server/routes/auth');
@@ -96,11 +111,17 @@ app.use((req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server ${PORT} portunda işləyir`);
-  console.log(`🕐 Timezone: ${process.env.TZ || 'Asia/Baku'}`);
-  console.log(`📅 Başlama vaxtı: ${new Date().toLocaleString('az-AZ', { timeZone: 'Asia/Baku' })}`);
-});
+
+// Run migrations first, then start server
+(async () => {
+  await runMigrations();
+  
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server ${PORT} portunda işləyir`);
+    console.log(`🕐 Timezone: ${process.env.TZ || 'Asia/Baku'}`);
+    console.log(`📅 Başlama vaxtı: ${new Date().toLocaleString('az-AZ', { timeZone: 'Asia/Baku' })}`);
+  });
+})();
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
