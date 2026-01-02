@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - BSU Chat</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <div class="admin-sidebar">
+            <div class="admin-header">
+                <h2>Admin Panel</h2>
+                <p id="adminUsername"></p>
+            </div>
+            <nav class="admin-nav">
+                <button class="admin-nav-btn active" data-view="dashboard">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    Dashboard
+                </button>
+                <button class="admin-nav-btn" data-view="users">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    İstifadəçilər
+                </button>
+                <button class="admin-nav-btn" data-view="reported">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    Şikayətlər
+                </button>
+                <button class="admin-nav-btn" data-view="settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v6m0 6v6m8.66-7a9 9 0 1 1-17.32 0"></path>
+                    </svg>
+                    Parametrlər
+                </button>
+                <button class="admin-nav-btn" data-view="filter">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    Filtr Sözləri
+                </button>
+                <button class="admin-nav-btn" id="adminManagementBtn" data-view="admins" style="display: none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="8.5" cy="7" r="4"></circle>
+                        <line x1="20" y1="8" x2="20" y2="14"></line>
+                        <line x1="23" y1="11" x2="17" y2="11"></line>
+                    </svg>
+                    Alt Adminlər
+                </button>
+            </nav>
+            <button id="logoutBtn" class="btn-logout">Çıxış</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-main">
+            <!-- Dashboard View -->
+            <div class="admin-view active" id="dashboardView">
+                <h1>Dashboard</h1>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3 id="totalUsers">0</h3>
+                            <p>Ümumi İstifadəçi</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <h3 id="activeUsers">0</h3>
+                            <p>Aktiv İstifadəçi</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💬</div>
+                        <div class="stat-info">
+                            <h3 id="totalMessages">0</h3>
+                            <p>Ümumi Mesajlar</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-info">
+                            <h3 id="totalReports">0</h3>
+                            <p>Şikayətlər</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users View -->
+            <div class="admin-view" id="usersView">
+                <h1>İstifadəçilər (<span id="userCount">0</span>)</h1>
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Ad Soyad</th>
+                                <th>Email</th>
+                                <th>Telefon</th>
+                                <th>Fakültə</th>
+                                <th>Dərəcə</th>
+                                <th>Kurs</th>
+                                <th>Qeydiyyat</th>
+                                <th>Status</th>
+                                <th>Əməliyyatlar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reported Users View -->
+            <div class="admin-view" id="reportedView">
+                <h1>Şikayət Edilən İstifadəçilər (16+)</h1>
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Ad Soyad</th>
+                                <th>Email</th>
+                                <th>Telefon</th>
+                                <th>Fakültə</th>
+                                <th>Şikayət Sayı</th>
+                                <th>Status</th>
+                                <th>Əməliyyatlar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportedUsersTableBody">
+                            <!-- Reported users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div class="admin-view" id="settingsView">
+                <h1>Parametrlər</h1>
+                <div class="settings-section">
+                    <h3>Qaydalar</h3>
+                    <textarea id="rulesTextarea" rows="10" placeholder="Qaydaları buraya yazın..."></textarea>
+                    <button id="saveRulesBtn" class="btn btn-primary">Yadda saxla</button>
+                </div>
+                <div class="settings-section">
+                    <h3>Günün Mövzusu</h3>
+                    <input type="text" id="topicInput" placeholder="Günün mövzusunu daxil edin">
+                    <button id="saveTopicBtn" class="btn btn-primary">Yadda saxla</button>
+                </div>
+                <div class="settings-section">
+                    <h3>Mesaj Silinmə Vaxtı</h3>
+                    <div class="expiry-settings">
+                        <div class="expiry-setting">
+                            <label>Qrup Mesajları (saat):</label>
+                            <input type="number" id="groupExpiryInput" min="0" placeholder="0 = heç vaxt silinməsin">
+                            <button id="saveGroupExpiryBtn" class="btn btn-primary">Yadda saxla</button>
+                        </div>
+                        <div class="expiry-setting">
+                            <label>Şəxsi Mesajlar (saat):</label>
+                            <input type="number" id="privateExpiryInput" min="0" placeholder="0 = heç vaxt silinməsin">
+                            <button id="savePrivateExpiryBtn" class="btn btn-primary">Yadda saxla</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Words View -->
+            <div class="admin-view" id="filterView">
+                <h1>Filtr Sözləri</h1>
+                <div class="filter-section">
+                    <div class="add-filter">
+                        <input type="text" id="filterWordInput" placeholder="Yeni söz əlavə et">
+                        <button id="addFilterWordBtn" class="btn btn-primary">Əlavə et</button>
+                    </div>
+                    <div class="filter-words-list" id="filterWordsList">
+                        <!-- Filter words will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admins View (Super Admin Only) -->
+            <div class="admin-view" id="adminsView">
+                <h1>Alt Adminlər</h1>
+                <div class="admins-section">
+                    <div class="add-admin">
+                        <h3>Yeni Admin Yarat</h3>
+                        <div class="admin-form">
+                            <input type="text" id="newAdminUsername" placeholder="İstifadəçi adı">
+                            <input type="password" id="newAdminPassword" placeholder="Şifrə">
+                            <button id="createAdminBtn" class="btn btn-primary">Yarat</button>
+                        </div>
+                    </div>
+                    <div class="admins-list">
+                        <h3>Mövcud Adminlər</h3>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>İstifadəçi adı</th>
+                                    <th>Yaradılma tarixi</th>
+                                    <th>Əməliyyatlar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminsTableBody">
+                                <!-- Admins will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>

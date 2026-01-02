@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(uuid())
+  name            String
+  email           String    @unique
+  phone           String    @unique
+  password        String
+  faculty         String
+  degree          String
+  course          Int
+  profilePicture  String?
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  sentMessages      Message[] @relation("SentMessages")
+  receivedMessages  Message[] @relation("ReceivedMessages")
+  blockedUsers      Block[]   @relation("BlockedBy")
+  blockedBy         Block[]   @relation("BlockedUser")
+  reports           Report[]  @relation("ReportedBy")
+  reportedReports   Report[]  @relation("ReportedUser")
+  
+  @@index([email])
+  @@index([phone])
+  @@index([faculty])
+}
+
+model Admin {
+  id              String    @id @default(uuid())
+  username        String    @unique
+  password        String
+  isSuperAdmin    Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([username])
+}
+
+model Message {
+  id              String    @id @default(uuid())
+  content         String
+  type            String    @default("text")
+  roomType        String
+  roomId          String?
+  senderId        String
+  receiverId      String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  expiresAt       DateTime?
+  
+  sender          User      @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver        User?     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  
+  @@index([roomType, roomId])
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([createdAt])
+  @@index([expiresAt])
+}
+
+model Block {
+  id              String    @id @default(uuid())
+  blockerId       String
+  blockedId       String
+  createdAt       DateTime  @default(now())
+  
+  blocker         User      @relation("BlockedBy", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked         User      @relation("BlockedUser", fields: [blockedId], references: [id], onDelete: Cascade)
+  
+  @@unique([blockerId, blockedId])
+  @@index([blockerId])
+  @@index([blockedId])
+}
+
+model Report {
+  id              String    @id @default(uuid())
+  reporterId      String
+  reportedUserId  String
+  reason          String?
+  createdAt       DateTime  @default(now())
+  
+  reporter        User      @relation("ReportedBy", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedUser    User      @relation("ReportedUser", fields: [reportedUserId], references: [id], onDelete: Cascade)
+  
+  @@index([reportedUserId])
+  @@index([reporterId])
+}
+
+model Settings {
+  id                      String    @id @default(uuid())
+  key                     String    @unique
+  value                   String
+  updatedAt               DateTime  @updatedAt
+  
+  @@index([key])
+}
+
+model FilterWord {
+  id              String    @id @default(uuid())
+  word            String    @unique
+  createdAt       DateTime  @default(now())
+  
+  @@index([word])
+}

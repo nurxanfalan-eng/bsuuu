@@ -1,0 +1,13 @@
+node_modules/
+.env
+.DS_Store
+*.log
+.vscode/
+*.swp
+*.swo
+public/uploads/*
+!public/uploads/.gitkeep
+prisma/migrations/
+.prisma/
+dist/
+build/
